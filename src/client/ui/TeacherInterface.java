@@ -9,8 +9,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import server.entity.Option;
-import server.entity.Question;
 import server.entity.Record;
 
 import static client.ui.FormUtils.*;

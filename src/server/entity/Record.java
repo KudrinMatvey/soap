@@ -1,15 +1,28 @@
 package server.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+//  todo add marks does not work
+// add file npe on not selected
 public class Record implements Serializable, Printable {
+    private String id;
     private String name;
     private Map<String, byte[]> filesMap = new HashMap<>();
-    private Question[] questionTransport = new Question[5];
-    private transient int questionsCount = 0;
+    private List<Mark> marks = new ArrayList<>();
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 
     public Record() {
 
@@ -18,69 +31,25 @@ public class Record implements Serializable, Printable {
     public Record(String name) {
         this.name = name;
     }
-
-    public String addQuestion (Question question) {
-        if(questionsCount == questionTransport.length) {
-            repack();
-        }
-        questionTransport[questionsCount++] = question;
-        filesMap.put(question.getQuestionText(), question);
-        return question.getQuestionText();
-    }
-
-    public boolean addQuestions (List<Question> questions) {
-        for (Question question : questions) {
-            if(questionsCount == this.questionTransport.length) {
-                repack();
-            }
-            this.questionTransport[questionsCount++] = question;
-            this.filesMap.put(question.getQuestionText(), question);
-        }
-        return true;
-    }
-
-    private void repack() {
-        Question[] newQuestions = new Question[questionTransport.length * 2];
-        for (int i = 0; i < questionTransport.length; i++) {
-            questionTransport[i] = questionTransport[i];
-        }
-        questionTransport = newQuestions;
+    public Record(String id, String name) {
+        this.name = name;
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public Question getQuestion(String id) {
-        return filesMap.get(id);
-    }
-
-    public Question[] getAllQuestions() {
-        return questionTransport;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
-    public Map<String, Question> getFilesMap() {
+    public Map<String, byte[]> getFilesMap() {
         return filesMap;
     }
 
-    public void setFilesMap(Map<String, Question> filesMap) {
+    public void setFilesMap(Map<String, byte[]> filesMap) {
         this.filesMap = filesMap;
-    }
-
-    public Question[] getQuestionTransport() {
-        return questionTransport;
-    }
-
-    public void setQuestionTransport(Question[] questionTransport) {
-        this.questionTransport = questionTransport;
-    }
-
-    public int getQuestionsCount() {
-        return questionsCount;
     }
 
     @Override
@@ -90,11 +59,30 @@ public class Record implements Serializable, Printable {
 
     @Override
     public String toString() {
-        return "Record: " + name + " filesMap: " + questionsCount;
+        return "Record{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 
     @Override
     public String getTrimmedText() {
         return name;
+    }
+
+    public void addMarks(Mark[] mark) {
+        for (int i = 0; i < mark.length; i++) {
+            marks.add(mark[i]);
+            // todo does it serilize
+//            throw new RuntimeException();
+        }
+    }
+
+    public boolean containsMark(String id) {
+        return marks.stream().anyMatch(m -> m.getId().equals(id));
+    }
+
+    public void removeMark(String markId) {
+        marks = marks.stream().filter(mark -> !mark.getId().equals(markId)).collect(Collectors.toList());
     }
 }

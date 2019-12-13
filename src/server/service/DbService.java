@@ -1,12 +1,12 @@
 package server.service;
 
-import server.entity.Option;
-import server.entity.Question;
+import server.entity.Mark;
 import server.entity.Record;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import java.util.List;
 
 @WebService
 @SOAPBinding(style = SOAPBinding.Style.RPC)
@@ -15,32 +15,26 @@ public interface DbService {
     public String addRecord(Record record);
 
     @WebMethod
-    public Record[] getAllTests();
+    void addMarkToRecord(String recordId, String[] markIds);
 
     @WebMethod
-    public Record getTest(String id);
+    public void addFileToRecord(String recordId, String fileName, byte[] file);
 
     @WebMethod
-    public Record getTestByName(String name);
+    String addMarkToSystem(String name);
 
     @WebMethod
-    public void addOptions(String testId, String questionId, Option [] options);
+    public byte[] getFile(String recordId, String fileName);
 
     @WebMethod
-    public void updateTest (Record record);
+    public void removeMark(String markId);
 
     @WebMethod
-    public Question[] getQuestions(String testName);
+    public Mark[] getAllMarks();
 
     @WebMethod
-    public void addQuestions(Question[] questions, String testName);
+    public Record[] getAllRecords();
 
     @WebMethod
-    public void addQuestion(Question question, String testName);
-
-    @WebMethod
-    public void addOption(Question question, Option option);
-
-    @WebMethod
-    public Option[] retrieveAllOptions(Question question);
+    public Record[] getRecordsByMark(String markId);
 }
