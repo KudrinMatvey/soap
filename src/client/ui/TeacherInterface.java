@@ -11,7 +11,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import server.entity.Option;
 import server.entity.Question;
-import server.entity.Test;
+import server.entity.Record;
 
 import static client.ui.FormUtils.*;
 import static client.ui.FormUtils.createHboxAndAppendButtons;
@@ -32,11 +32,11 @@ public class TeacherInterface {
         Text createTitle = createText("Create test");
         createGrid.add(createTitle, 0, 0, 2, 1);
 
-        Label testName = new Label("Test name:");
+        Label testName = new Label("Record name:");
         createGrid.add(testName, 0, 1);
 
         TextField testTextField = new TextField();
-        testTextField.setText("Test 1");
+        testTextField.setText("Record 1");
         createGrid.add(testTextField, 1, 1);
 
         Button okBtn = createButtonWithTitle("Create");
@@ -56,11 +56,11 @@ public class TeacherInterface {
         return createGrid;
     }
 
-    public GridPane showAddQuestion(GridPane previousGrid, BorderPane previousPane, HBox previousBottom, ListView<String> listView, HBox previousTop, Test selectedTest) {
+    public GridPane showAddQuestion(GridPane previousGrid, BorderPane previousPane, HBox previousBottom, ListView<String> listView, HBox previousTop, Record selectedRecord) {
         GridPane createGrid = createGrid();
         int gridRowIndex = 0;
 
-        Text createTitle = createText("Create question for " + selectedTest.getName());
+        Text createTitle = createText("Create question for " + selectedRecord.getName());
         createGrid.add(createTitle, 0, gridRowIndex++, 2, 1);
 
         Label testName = new Label("Question name:");
@@ -73,14 +73,14 @@ public class TeacherInterface {
         Label createdQuestionsLabel = new Label("Created questions:");
         createGrid.add(createdQuestionsLabel, 0, gridRowIndex++);
 
-        ListView<String> list = createListAndFill(selectedTest.getAllQuestions());
+        ListView<String> list = createListAndFill(selectedRecord.getAllQuestions());
         createGrid.add(list, 0, gridRowIndex++);
 
 
         Button okBtn = createButtonWithTitle("Create");
         okBtn.setOnMouseClicked(userConfirm -> {
-            TestFacade.addQuestion(selectedTest, new Question(questionNameField.getText(), selectedTest.getName()));
-            fillList(list, TestFacade.getQuestions(selectedTest));
+            TestFacade.addQuestion(selectedRecord, new Question(questionNameField.getText(), selectedRecord.getName()));
+            fillList(list, TestFacade.getQuestions(selectedRecord));
         });
 
         Button backBtn = createButtonWithTitle("Back");
@@ -92,18 +92,18 @@ public class TeacherInterface {
         return createGrid;
     }
 
-    public GridPane showPreviewTest(GridPane previousGrid, BorderPane previousPane, HBox previousBottom, ListView<String> listView, HBox previousTop, Test selectedTest) {
+    public GridPane showPreviewTest(GridPane previousGrid, BorderPane previousPane, HBox previousBottom, ListView<String> listView, HBox previousTop, Record selectedRecord) {
         GridPane createGrid = createGrid();
         int gridRowIndex = 0;
 
-        Text createTitle = createText("Test info: " + selectedTest.getName());
+        Text createTitle = createText("Record info: " + selectedRecord.getName());
         createGrid.add(createTitle, 0, gridRowIndex++, 2, 1);
 
 
         Label createdQuestionsLabel = new Label("Created questions:");
         createGrid.add(createdQuestionsLabel, 0, gridRowIndex++);
 
-        ListView<String> list = createListAndFill(selectedTest.getAllQuestions());
+        ListView<String> list = createListAndFill(selectedRecord.getAllQuestions());
         createGrid.add(list, 0, gridRowIndex);
 
 
@@ -121,7 +121,7 @@ public class TeacherInterface {
         modifyQuestionButton.setOnMouseClicked(onSelect -> {
             int selectedIndex = list.getSelectionModel().getSelectedIndex();
             if(selectedIndex >= 0) {
-                Question selectedQuestion = selectedTest.getAllQuestions()[selectedIndex];
+                Question selectedQuestion = selectedRecord.getAllQuestions()[selectedIndex];
                 go(previousPane, new HBox(), showModifyQuestionPanel(createGrid, previousPane, bottom, new HBox(), selectedQuestion),new HBox());
             }
         });
@@ -139,7 +139,7 @@ public class TeacherInterface {
         Button exit = createButtonWithTitle("exit");
         Button modifyTestBtn = createButtonWithTitle("Modify test");
         Button createBtn = createButtonWithTitle("Create test");
-        Button previewTestBtn = createButtonWithTitle("Preview Test");
+        Button previewTestBtn = createButtonWithTitle("Preview Record");
 
         HBox hBox = createHboxAndAppendButtons(modifyTestBtn, createBtn, previewTestBtn);
         HBox hBoxBtn = createHboxAndAppendButtons(exit);
@@ -159,16 +159,16 @@ public class TeacherInterface {
         modifyTestBtn.setOnMouseClicked(event2 -> {
             String selectedTest = list.getSelectionModel().getSelectedItem();
             if (selectedTest != null) {
-                Test test = TestFacade.getTestByName(selectedTest);
-                go(borderPane, new HBox(), showAddQuestion(joinGrid, borderPane, hBoxBtn, list, hBox, test), new HBox());
+                Record record = TestFacade.getTestByName(selectedTest);
+                go(borderPane, new HBox(), showAddQuestion(joinGrid, borderPane, hBoxBtn, list, hBox, record), new HBox());
             }
         });
 
         previewTestBtn.setOnMouseClicked(event -> {
             String selectedTest = list.getSelectionModel().getSelectedItem();
             if (selectedTest != null) {
-                Test test = TestFacade.getTestByName(selectedTest);
-                go(borderPane, new HBox(), showPreviewTest(joinGrid, borderPane, hBoxBtn, list, hBox, test), new HBox());
+                Record record = TestFacade.getTestByName(selectedTest);
+                go(borderPane, new HBox(), showPreviewTest(joinGrid, borderPane, hBoxBtn, list, hBox, record), new HBox());
             }
         });
 

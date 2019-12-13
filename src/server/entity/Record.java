@@ -5,17 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Test implements Serializable, Printable {
+public class Record implements Serializable, Printable {
     private String name;
-    private Map<String,Question> questions = new HashMap<>();
+    private Map<String, byte[]> filesMap = new HashMap<>();
     private Question[] questionTransport = new Question[5];
     private transient int questionsCount = 0;
 
-    public Test() {
+    public Record() {
 
     }
 
-    public Test(String name) {
+    public Record(String name) {
         this.name = name;
     }
 
@@ -24,7 +24,7 @@ public class Test implements Serializable, Printable {
             repack();
         }
         questionTransport[questionsCount++] = question;
-        questions.put(question.getQuestionText(), question);
+        filesMap.put(question.getQuestionText(), question);
         return question.getQuestionText();
     }
 
@@ -34,7 +34,7 @@ public class Test implements Serializable, Printable {
                 repack();
             }
             this.questionTransport[questionsCount++] = question;
-            this.questions.put(question.getQuestionText(), question);
+            this.filesMap.put(question.getQuestionText(), question);
         }
         return true;
     }
@@ -52,7 +52,7 @@ public class Test implements Serializable, Printable {
     }
 
     public Question getQuestion(String id) {
-        return questions.get(id);
+        return filesMap.get(id);
     }
 
     public Question[] getAllQuestions() {
@@ -63,12 +63,12 @@ public class Test implements Serializable, Printable {
         this.name = name;
     }
 
-    public Map<String, Question> getQuestions() {
-        return questions;
+    public Map<String, Question> getFilesMap() {
+        return filesMap;
     }
 
-    public void setQuestions(Map<String, Question> questions) {
-        this.questions = questions;
+    public void setFilesMap(Map<String, Question> filesMap) {
+        this.filesMap = filesMap;
     }
 
     public Question[] getQuestionTransport() {
@@ -90,7 +90,7 @@ public class Test implements Serializable, Printable {
 
     @Override
     public String toString() {
-        return "Test: " + name + " questions: " + questionsCount;
+        return "Record: " + name + " filesMap: " + questionsCount;
     }
 
     @Override

@@ -2,8 +2,8 @@ package client;
 
 import server.entity.Option;
 import server.entity.Question;
-import server.entity.Test;
-import server.service.TestService;
+import server.entity.Record;
+import server.service.DbService;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -14,57 +14,57 @@ import java.util.stream.Stream;
 
 public final class TestFacade {
 
-    private static TestService service;
+    private static DbService service;
 
     static {
         try {
             URL testServiceURL = new URL("http://localhost:8888/test?wsdl");
             QName name = new QName("http://service.server/", "TestServiceImplService");
             Service testConnectService = Service.create(testServiceURL, name);
-            service = testConnectService.getPort(TestService.class);
+            service = testConnectService.getPort(DbService.class);
         } catch (Throwable e) {
             System.out.println("Error when trying to connect server" + e.getMessage());
         }
     }
 
-    public static void addTest(Test test) {
-        service.addTest(test);
+    public static void addTest(Record record) {
+        service.addRecord(record);
     }
 
     public static void createAndAddTest(String name) {
-        Test test = new Test(name);
-        service.addTest(test);
+        Record record = new Record(name);
+        service.addRecord(record);
     }
 
-    public static Test[] getAllTests() {
+    public static Record[] getAllTests() {
         return service.getAllTests();
     }
 
     public static ArrayList<String> retrieveAllTestNames() {
         ArrayList<String> result = new ArrayList<>();
-        Stream<Test> stream = Arrays.stream(service.getAllTests());
+        Stream<Record> stream = Arrays.stream(service.getAllTests());
         stream.forEach(test -> result.add(test.getName()));
         return result;
     }
 
-    public static Test getTestByName(String name) {
+    public static Record getTestByName(String name) {
         return service.getTestByName(name);
     }
 
-    public static void updateTest(Test test) {
-        service.updateTest(test);
+    public static void updateTest(Record record) {
+        service.updateTest(record);
     }
 
-    public static Question[] getQuestions(Test test) {
-        return service.getQuestions(test.getName());
+    public static Question[] getQuestions(Record record) {
+        return service.getQuestions(record.getName());
     }
 
-    public static void addQuestions(Test test, Question[] questions) {
-        service.addQuestions(questions, test.getName());
+    public static void addQuestions(Record record, Question[] questions) {
+        service.addQuestions(questions, record.getName());
     }
 
-    public static void addQuestion(Test test, Question question) {
-        service.addQuestion(question, test.getName());
+    public static void addQuestion(Record record, Question question) {
+        service.addQuestion(question, record.getName());
     }
 
     public static void addOption(Question question, Option option) {

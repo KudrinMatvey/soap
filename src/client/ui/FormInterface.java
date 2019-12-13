@@ -5,7 +5,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import server.entity.Test;
+import server.entity.Record;
 
 import javax.swing.*;
 
@@ -16,7 +16,7 @@ public class FormInterface {
     private double width = 550;
     private double height = 350;
 
-    private Test[] tests = new Test[0];
+    private Record[] records = new Record[0];
 
     private JPanel panel;
 

@@ -1,10 +1,10 @@
 package client;
 
 import server.entity.Question;
+import server.entity.Record;
 import server.entity.Student;
-import server.entity.Test;
 import server.service.StudentService;
-import server.service.TestService;
+import server.service.DbService;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -33,22 +33,22 @@ public class SOAPPublisherClient {
 
 
 
-        URL testServiceURL = new URL("http://localhost:8888/test?wsdl");
+        URL testServiceURL = new URL("http://localhost:8888/record?wsdl");
         QName name = new QName("http://service.server/", "TestServiceImplService");
         Service testConnectService = Service.create(testServiceURL, name);
-        TestService testService = testConnectService.getPort(TestService.class);
-        Test test = new Test("TEST");
-        test.addQuestion(new Question("QQQQ", "12222"));
-        test.addQuestion(new Question("ddddd", "12233"));
+        DbService dbService = testConnectService.getPort(DbService.class);
+        Record record = new Record("TEST");
+        record.addQuestion(new Question("QQQQ", "12222"));
+        record.addQuestion(new Question("ddddd", "12233"));
 
-        Test secondTest = new Test("TEST1");
-        secondTest.addQuestion(new Question("QQQQ1", "1"));
+        Record secondRecord = new Record("TEST1");
+        secondRecord.addQuestion(new Question("QQQQ1", "1"));
 
-        System.out.println("Test add: " + testService.addTest(test));
-        System.out.println("Second test add: " + testService.addTest(secondTest));
+        System.out.println("Record add: " + dbService.addRecord(record));
+        System.out.println("Second record add: " + dbService.addRecord(secondRecord));
 
-        Test[] list = testService.getAllTests();
-        for (Test t : list) {
+        Record[] list = dbService.getAllTests();
+        for (Record t : list) {
             System.out.println(t.toString());
         }
 

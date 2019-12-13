@@ -11,10 +11,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import server.entity.Option;
 import server.entity.Question;
-import server.entity.Test;
+import server.entity.Record;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class StudentInterface {
 
         Button exit = createButtonWithTitle("exit");
 
-        Button takeTestBtn = createButtonWithTitle("Take Test");
+        Button takeTestBtn = createButtonWithTitle("Take Record");
 
         HBox hBox = createHboxAndAppendButtons(takeTestBtn);
         HBox hBoxBtn = createHboxAndAppendButtons(exit);
@@ -62,15 +61,15 @@ public class StudentInterface {
         takeTestBtn.setOnMouseClicked(event2 -> {
             String selectedTest = list.getSelectionModel().getSelectedItem();
             if (selectedTest != null) {
-                Test test = TestFacade.getTestByName(selectedTest);
-                Question[] questions = TestFacade.getQuestions(test);
+                Record record = TestFacade.getTestByName(selectedTest);
+                Question[] questions = TestFacade.getQuestions(record);
                 List<Question> questionList = new ArrayList<>();
                 for (Question q : questions) {
                     if(q.getQuestionText() != null) {
                         questionList.add(q);
                     }
                 }
-                go(borderPane, new HBox(), startTest(borderPane ,joinGrid,test, questionList.iterator()), new HBox());
+                go(borderPane, new HBox(), startTest(borderPane ,joinGrid, record, questionList.iterator()), new HBox());
             }
         });
 
@@ -79,11 +78,11 @@ public class StudentInterface {
         stage.show();
     }
 
-    public GridPane startTest(BorderPane previousPane, GridPane previousGrid,Test selectedTest, Iterator<Question> iterator) {
+    public GridPane startTest(BorderPane previousPane, GridPane previousGrid, Record selectedRecord, Iterator<Question> iterator) {
         GridPane grid = createGrid();
         int gridRowIndex = 0;
 
-        Text testTitle = createText(selectedTest.getName());
+        Text testTitle = createText(selectedRecord.getName());
         grid.add(testTitle, 0, gridRowIndex++, 2, 1);
 
         Question currentQuestion = iterator.next();
@@ -122,7 +121,7 @@ public class StudentInterface {
                             }
                         }
                     }
-                    previousPane.setCenter(startTest(previousPane, previousGrid, selectedTest, iterator));
+                    previousPane.setCenter(startTest(previousPane, previousGrid, selectedRecord, iterator));
                 }
             });
             grid.add(createHboxAndAppendButtons(okBtn), 1, gridRowIndex);

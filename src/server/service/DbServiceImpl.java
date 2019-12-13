@@ -2,30 +2,30 @@ package server.service;
 
 import server.entity.Option;
 import server.entity.Question;
-import server.entity.Test;
+import server.entity.Record;
 
 import javax.jws.WebService;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@WebService(endpointInterface = "server.service.TestService")
-public class TestServiceImpl implements TestService {
-    private static Map<String, Test> testMap = new ConcurrentHashMap<>();
+@WebService(endpointInterface = "server.service.DbService")
+public class DbServiceImpl implements DbService {
+    private static Map<String, Record> testMap = new ConcurrentHashMap<>();
     private static int count = 0;
 
     @Override
-    public String addTest(Test test) {
+    public String addRecord(Record record) {
         String currentIndex = String.valueOf(count++);
-        testMap.put(currentIndex, test);
+        testMap.put(currentIndex, record);
         return currentIndex;
     }
 
     @Override
-    public Test[] getAllTests() {
-        Test[] result = new Test[testMap.size()];
+    public Record[] getAllTests() {
+        Record[] result = new Record[testMap.size()];
         int i = 0;
-        for (Test value : testMap.values()) {
+        for (Record value : testMap.values()) {
             System.out.println(value);
             result[i++] = value;
         }
@@ -34,15 +34,15 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public Test getTest(String id) {
+    public Record getTest(String id) {
         return testMap.get(id);
     }
 
     @Override
-    public Test getTestByName(String name) {
-        for (Test test : testMap.values()) {
-            if (test.getName().equals(name)) {
-                return test;
+    public Record getTestByName(String name) {
+        for (Record record : testMap.values()) {
+            if (record.getName().equals(name)) {
+                return record;
             }
         }
         return null;
@@ -50,8 +50,8 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public Question[] getQuestions(String testName) {
-        Test existingTest = getTestByName(testName);
-        System.out.println("Fetched test " + existingTest);
+        Record existingRecord = getTestByName(testName);
+        System.out.println("Fetched test " + existingRecord);
         Question[] returnQuestions =  getTestByName(testName).getAllQuestions();
         for (Question question : returnQuestions) {
             if(question != null) {
@@ -63,8 +63,8 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public void updateTest(Test test) {
-        getTestByName(test.getName()).addQuestions(Arrays.asList(test.getAllQuestions()));
+    public void updateTest(Record record) {
+        getTestByName(record.getName()).addQuestions(Arrays.asList(record.getAllQuestions()));
     }
 
     @Override

@@ -3,7 +3,7 @@
 <endpoints xmlns='http://java.sun.com/xml/ns/jax-ws/ri/runtime' version='2.0'>
 
     <endpoint
-            name='HelloWorld'
-            implementation='server.HelloWorld'
-            url-pattern='/services/HelloWorld'/>
+            name='myDb'
+            implementation='server.myDb'
+            url-pattern='/services/myDb'/>
 </endpoints>

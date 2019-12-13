@@ -1,10 +1,6 @@
 package client.ui;
 
-import server.service.StudentServiceImpl;
-import server.service.TestServiceImpl;
-
 import javax.swing.*;
-import javax.xml.ws.Endpoint;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
