@@ -38,7 +38,7 @@ public class Mark {
 
     public boolean includedIn(String[] markIds) {
         for (int i = 0; i < markIds.length; i++) {
-            if (markIds[i] == id) return true;
+            if (markIds[i].equals(id)) return true;
         }
         return false;
     }

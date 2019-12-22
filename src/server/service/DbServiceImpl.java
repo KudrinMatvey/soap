@@ -16,18 +16,19 @@ public class DbServiceImpl implements DbService {
     private static int count = 0;
 
     public DbServiceImpl() {
-        for (int i = 0; i < 10; i++) {
-            map.put(String.valueOf(i), new Record(String.valueOf(i), String.valueOf(i)));
-            markMap.put(String.valueOf(i), new Mark(String.valueOf(i), String.valueOf(i)));
-            Mark[] m = new Mark[1];
-            m[0] = markMap.get(i);
-            map.get(String.valueOf(i)).addMarks(m);
-        }
+//        for (int i = 0; i < 10; i++) {
+//            map.put(String.valueOf(i), new Record(String.valueOf(i), String.valueOf(i)));
+//            markMap.put(String.valueOf(i), new Mark(String.valueOf(i), String.valueOf(i)));
+//            Mark[] m = new Mark[1];
+//            m[0] = markMap.get(String.valueOf(i));
+//            map.get(String.valueOf(i)).addMarks(m);
+//        }
     }
 
     @Override
     public String addRecord(Record record) {
         String currentIndex = String.valueOf(count++);
+        record.setId(currentIndex);
         map.put(currentIndex, record);
         return currentIndex;
     }
@@ -35,13 +36,12 @@ public class DbServiceImpl implements DbService {
     @Override
     public void addMarkToRecord(String recordId, String[] markIds) {
         Record r = map.get(recordId);
-        List<Mark> mark = markMap.entrySet().stream()
-                .filter(stringMarkEntry -> stringMarkEntry.getValue().includedIn(markIds))
-                .map(stringMarkEntry -> stringMarkEntry.getValue())
+        List<Mark> mark = markMap.values().stream()
+                .filter(stringMarkEntry -> stringMarkEntry.includedIn(markIds))
                 .collect(Collectors.toList());
         if (r != null && !mark.isEmpty()) {
-            r.addMarks((Mark[])mark.toArray());
-        } else throw new UnsupportedOperationException();
+            r.addMarks(mark.toArray(new Mark[0]));
+        }
     }
 
     @Override
@@ -62,9 +62,9 @@ public class DbServiceImpl implements DbService {
     public byte[] getFile(String recordId, String fileName) {
         Record r = map.get(recordId);
         if (r != null) {
-            return r.getFilesMap().get(fileName);
+            return r.getFilesMap().containsKey(fileName) ? r.getFilesMap().get(fileName) : new byte[0];
         }
-        return null;
+        return new byte[0];
     }
 
     @Override

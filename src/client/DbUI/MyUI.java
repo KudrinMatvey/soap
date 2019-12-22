@@ -12,6 +12,7 @@ import javax.xml.ws.Service;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,6 +28,8 @@ public class MyUI extends JFrame {
     DefaultListModel markListModel;
     Record selectedRecord;
     Mark[] selectedMarks;
+    JFileChooser fileChooser;
+    File selectedFile;
     private JList recordsList;
     private JTextField addRecordTextField;
     private JButton getAllButton;
@@ -41,8 +44,6 @@ public class MyUI extends JFrame {
     private JButton removeMarkButton;
     private JButton selectFileButton;
     private JButton addFileButton;
-    JFileChooser fileChooser;
-    File selectedFile;
 
     MyUI() throws MalformedURLException {
         testServiceURL = new URL("http://localhost:8888/db");
@@ -81,7 +82,9 @@ public class MyUI extends JFrame {
         recordsList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                selectedRecord = (Record) listModel.get(e.getFirstIndex());
+                if (listModel.size() > e.getFirstIndex())
+                    selectedRecord = (Record) listModel.get(e.getFirstIndex());
+                else selectedRecord = null;
             }
         });
         getAllMarksButton.addMouseListener(new MouseAdapter() {
@@ -98,9 +101,12 @@ public class MyUI extends JFrame {
         marksList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                selectedMarks = new Mark[e.getFirstIndex() - e.getLastIndex() + 1];
-                for (int i = 0; i < e.getFirstIndex() - e.getLastIndex() + 1; i++) {
-                    selectedMarks[i] = (Mark) markListModel.get(i);
+                int length = Math.abs(e.getFirstIndex() - e.getLastIndex()) + 1;
+                selectedMarks = new Mark[length];
+                int start = Math.min(e.getFirstIndex(), e.getLastIndex());
+                int end = Math.max(e.getFirstIndex(), e.getLastIndex());
+                for (int i = start; i <= end; i++) {
+                    selectedMarks[i - start] = (Mark) markListModel.get(i);
                 }
             }
         });
@@ -126,7 +132,18 @@ public class MyUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (selectedRecord != null) {
-                    dbService.getFile(selectedRecord.getId(), addRecordTextField.getText());
+                    File f = new File("\\files\\",addRecordTextField.getText() + ".txt");
+                    byte[] b = dbService.getFile(selectedRecord.getId(), addRecordTextField.getText());
+                    if (b.length > 0) {
+                        try {
+                            FileOutputStream fos = new FileOutputStream(f);
+                            fos.write(b);
+                            fos.close();
+                            System.out.println(f.getAbsolutePath().concat(" is created"));
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
                 }
             }
         });
@@ -144,7 +161,12 @@ public class MyUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (selectedMarks != null && selectedMarks[0] != null) {
-                    dbService.getRecordsByMark(selectedMarks[0].getId());
+                    Record[] r = dbService.getRecordsByMark(selectedMarks[0].getId());
+                    listModel = new DefaultListModel();
+                    for (int i = 0; i < r.length; i++) {
+                        listModel.addElement(r[i]);
+                    }
+                    recordsList.setModel(listModel);
                 }
             }
         });
@@ -162,7 +184,7 @@ public class MyUI extends JFrame {
         addFileButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(selectedFile != null) {
+                if (selectedFile != null) {
                     try {
                         byte[] a = Files.readAllBytes(selectedFile.toPath());
                         dbService.addFileToRecord(selectedRecord.getId(), addRecordTextField.getText(), a);
