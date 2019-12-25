@@ -11,10 +11,7 @@ public class Mark {
 
     @Override
     public String toString() {
-        return "Mark{" +
-                "id='" + id + '\'' +
-                ", Text='" + Text + '\'' +
-                '}';
+        return "Mark{ text = " + Text + '}';
     }
 
     public Mark() {

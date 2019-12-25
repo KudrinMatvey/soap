@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 //  todo add marks does not work
 // add file npe on not selected
-public class Record implements Serializable, Printable {
+public class Record implements Serializable {
     private String id;
     private String name;
     private Map<String, byte[]> filesMap = new HashMap<>();
@@ -52,20 +52,12 @@ public class Record implements Serializable, Printable {
         this.filesMap = filesMap;
     }
 
-    @Override
-    public String getText() {
-        return name;
-    }
 
     @Override
     public String toString() {
-        return "Record{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                '}';
+        return "Record{ name: " + name + '}';
     }
 
-    @Override
     public String getTrimmedText() {
         return name;
     }
@@ -75,7 +67,7 @@ public class Record implements Serializable, Printable {
             marks.add(mark[i]);
             // todo does it serilize
 //            throw new RuntimeException();
-        }
+    }
     }
 
     public boolean containsMark(String id) {

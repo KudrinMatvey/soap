@@ -53,13 +53,6 @@ public class MyUI extends JFrame {
         fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 
-//        record = new Record("TEST");
-
-//        DefaultListModel listModel = new DefaultListModel();
-//        listModel.addElement("hello");
-//        recordsList = new JList(listModel);
-//        lis
-//        recordsList.setModel(listModel);
         this.getContentPane().add(panel);
         setSize(1100, 1000);
         getAllButton.addMouseListener(new MouseAdapter() {
