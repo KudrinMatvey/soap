@@ -58,18 +58,14 @@ public class MyUI extends JFrame {
         getAllButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Record[] r = dbService.getAllRecords();
-                listModel = new DefaultListModel();
-                for (int i = 0; i < r.length; i++) {
-                    listModel.addElement(r[i]);
-                }
-                recordsList.setModel(listModel);
+                getRecprds();
             }
         });
         addRecordButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 dbService.addRecord(new Record(addRecordTextField.getText()));
+                getRecprds();
             }
         });
         recordsList.addListSelectionListener(new ListSelectionListener() {
@@ -83,12 +79,7 @@ public class MyUI extends JFrame {
         getAllMarksButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                Object[] r = dbService.getAllMarks();
-                markListModel = new DefaultListModel();
-                for (int i = 0; i < r.length; i++) {
-                    markListModel.addElement(r[i]);
-                }
-                marksList.setModel(markListModel);
+                getMarks();
             }
         });
         marksList.addListSelectionListener(new ListSelectionListener() {
@@ -119,25 +110,32 @@ public class MyUI extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 dbService.addMarkToSystem(addRecordTextField.getText());
+                getMarks();
             }
         });
         getFileButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (selectedRecord != null) {
-                    File f = new File("\\files\\",addRecordTextField.getText() + ".txt");
-                    byte[] b = dbService.getFile(selectedRecord.getId(), addRecordTextField.getText());
-                    if (b.length > 0) {
-                        try {
-                            FileOutputStream fos = new FileOutputStream(f);
-                            fos.write(b);
-                            fos.close();
-                            System.out.println(f.getAbsolutePath().concat(" is created"));
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                try {
+                    if (selectedRecord != null) {
+                        File f = new File("\\C:/files\\",addRecordTextField.getText() + ".txt");
+                        byte[] b = dbService.getFile(selectedRecord.getId(), addRecordTextField.getText());
+                        if (b.length > 0) {
+                            try {
+                                FileOutputStream fos = new FileOutputStream(f);
+                                fos.write(b);
+                                fos.close();
+                                System.out.println(f.getAbsolutePath().concat(" is created"));
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                         }
                     }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+
+
             }
         });
         removeMarkButton.addMouseListener(new MouseAdapter() {
@@ -189,6 +187,24 @@ public class MyUI extends JFrame {
                 selectedFile = null;
             }
         });
+    }
+
+    private void getRecprds() {
+        Record[] r = dbService.getAllRecords();
+        listModel = new DefaultListModel();
+        for (int i = 0; i < r.length; i++) {
+            listModel.addElement(r[i]);
+        }
+        recordsList.setModel(listModel);
+    }
+
+    private void getMarks() {
+        Object[] r = dbService.getAllMarks();
+        markListModel = new DefaultListModel();
+        for (int i = 0; i < r.length; i++) {
+            markListModel.addElement(r[i]);
+        }
+        marksList.setModel(markListModel);
     }
 
     public static void main(String[] args) {
